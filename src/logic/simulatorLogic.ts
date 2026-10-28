@@ -44,7 +44,6 @@ export function assignSingleCustomer(
     .filter((i) => i !== -1);
 
   if (customer.type === 'priority') {
-    // Priority customers route to Priority Cashiers (or Regular if no Priority Cashiers exist)
     const targetPool =
       priorityCashierIndices.length > 0
         ? priorityCashierIndices
@@ -75,9 +74,6 @@ export function assignSingleCustomer(
       targetCashier.queue.push(customer);
     }
   } else {
-    // Normal customer
-    // Rule: "If priority cashier is empty, normal customer can be served"
-    // Check if any priority cashier is completely empty (no current customer and empty queue)
     const emptyPriorityIndex = priorityCashierIndices.find(
       (idx) => !updated[idx].currentCustomer && updated[idx].queue.length === 0
     );
@@ -87,7 +83,6 @@ export function assignSingleCustomer(
       priorityCashier.currentCustomer = customer;
       priorityCashier.remainingTime = customer.serviceTime;
     } else {
-      // Route to regular cashiers with shortest queue (or fallback to priority if no regular cashiers exist)
       const targetPool =
         regularCashierIndices.length > 0
           ? regularCashierIndices

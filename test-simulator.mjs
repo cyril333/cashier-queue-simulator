@@ -297,14 +297,11 @@ console.log('--- RUNNING QUEUE SIMULATOR TESTS ---');
   console.log('✓ Test 5B Passed: 6 second tick matches Page 2 Diagram 2 exactly!');
 }
 
-// Test 6: Dynamic addition of a second Priority Cashier
 {
   let cashiers = createInitialCashiers();
-  // Fill first priority cashier
   cashiers[0].currentCustomer = { id: 1, serviceTime: 30, type: 'priority' };
   cashiers[0].remainingTime = 30;
 
-  // Add new Priority Cashier
   cashiers.push({
     id: 'cashier-4',
     name: 'Priority Cashier 2',
@@ -314,29 +311,23 @@ console.log('--- RUNNING QUEUE SIMULATOR TESTS ---');
     queue: [],
   });
 
-  // Assign a new priority customer
   const newPriorityCustomer = { id: 2, serviceTime: 25, type: 'priority' };
   cashiers = assignSingleCustomer(newPriorityCustomer, cashiers);
 
-  // Should be served immediately at the new Priority Cashier 2!
   assert.strictEqual(cashiers[3].currentCustomer.id, 2);
   assert.strictEqual(cashiers[3].remainingTime, 25);
   console.log('✓ Test 6 Passed: Dynamic Priority Cashier immediately serves new priority customer');
 }
 
-// Test 7: Dynamic addition of a third Regular Cashier
 {
   let cashiers = createInitialCashiers();
-  // Cashier 1 priority is busy
   cashiers[0].currentCustomer = { id: 1, serviceTime: 30, type: 'priority' };
   cashiers[0].remainingTime = 30;
-  // Regular cashiers 2 & 3 are busy
   cashiers[1].currentCustomer = { id: 2, serviceTime: 20, type: 'normal' };
   cashiers[1].remainingTime = 20;
   cashiers[2].currentCustomer = { id: 3, serviceTime: 20, type: 'normal' };
   cashiers[2].remainingTime = 20;
 
-  // Add 3rd Regular Cashier (idle)
   cashiers.push({
     id: 'cashier-4',
     name: 'Regular Cashier 3',
@@ -349,7 +340,6 @@ console.log('--- RUNNING QUEUE SIMULATOR TESTS ---');
   const normalCust = { id: 4, serviceTime: 15, type: 'normal' };
   cashiers = assignSingleCustomer(normalCust, cashiers);
 
-  // Should route to the newly added idle Regular Cashier
   assert.strictEqual(cashiers[3].currentCustomer.id, 4);
   assert.strictEqual(cashiers[3].remainingTime, 15);
   console.log('✓ Test 7 Passed: Dynamic Regular Cashier receives normal customer');

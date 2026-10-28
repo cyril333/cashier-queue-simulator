@@ -26,7 +26,6 @@ export const Cashier: React.FC<CashierProps> = ({ cashier, onRemove, canRemove }
       )}
       <h3 className="cashier-title">{cashier.name}</h3>
 
-      {/* Serving Box */}
       <div className={`serving-box ${isIdle ? 'idle' : 'active'}`}>
         {isIdle ? (
           <span className="idle-text">Idle Cashier</span>
@@ -42,7 +41,6 @@ export const Cashier: React.FC<CashierProps> = ({ cashier, onRemove, canRemove }
         )}
       </div>
 
-      {/* Cashier Queue Section */}
       <div className="cashier-queue-container">
         <h4 className="queue-header">Queue</h4>
         <div className="queue-list-wrapper">

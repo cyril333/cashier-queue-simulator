@@ -12,7 +12,6 @@ import confetti from 'canvas-confetti';
 import './App.css';
 
 export const App: React.FC = () => {
-  // State management using useState hooks
   const [waitingQueue, setWaitingQueue] = useState<Customer[]>([]);
   const [cashiers, setCashiers] = useState<CashierState[]>(INITIAL_CASHIERS_FACTORY);
   const [nextCustomerId, setNextCustomerId] = useState<number>(0);
@@ -32,16 +31,8 @@ export const App: React.FC = () => {
   const waitingQueueRef = useRef(waitingQueue);
   waitingQueueRef.current = waitingQueue;
 
-  /**
-   * Add Customer:
-   * - Create customer and add to waiting queue
-   * - Random service time from 5 - 100
-   * - Customer type Priority or Normal
-   * - Color code the customers
-   */
   const handleAddCustomer = useCallback(() => {
     const serviceTime = Math.floor(Math.random() * (100 - 5 + 1)) + 5;
-    // ~40% chance of priority customer, 60% normal
     const type: CustomerType = Math.random() < 0.4 ? 'priority' : 'normal';
 
     const newCustomer: Customer = {
@@ -55,9 +46,6 @@ export const App: React.FC = () => {
     setStats((prev) => ({ ...prev, totalCreated: prev.totalCreated + 1 }));
   }, [nextCustomerId]);
 
-  /**
-   * Helper to add multiple random customers at once for testing
-   */
   const handleAddMultipleCustomers = useCallback((count: number) => {
     setNextCustomerId((startId) => {
       const newCustomers: Customer[] = [];
@@ -76,10 +64,6 @@ export const App: React.FC = () => {
     });
   }, []);
 
-  /**
-   * Assign Customer:
-   * Single customer assignment to cashier using the assignment rules.
-   */
   const handleAssignCustomer = useCallback(() => {
     if (waitingQueue.length === 0) return;
 
@@ -90,10 +74,6 @@ export const App: React.FC = () => {
     setWaitingQueue(remainingWaiting);
   }, [waitingQueue, assignSingleCustomer]);
 
-  /**
-   * Assign All Customers:
-   * "Use the function from [assign customer] for each of the customers in queue"
-   */
   const handleAssignAllCustomers = useCallback(() => {
     if (waitingQueue.length === 0) return;
 
@@ -108,10 +88,6 @@ export const App: React.FC = () => {
     setWaitingQueue([]);
   }, [waitingQueue, assignSingleCustomer]);
 
-  /**
-   * Add New Cashier:
-   * Adds either a Normal (regular) or Priority cashier dynamically.
-   */
   const handleAddCashier = useCallback((type: CashierType) => {
     setCashiers((prev) => {
       const typeCount = prev.filter((c) => c.type === type).length;
@@ -130,10 +106,6 @@ export const App: React.FC = () => {
     });
   }, []);
 
-  /**
-   * Remove Cashier:
-   * Safely returns active/queued customers back to the waiting queue and removes the cashier.
-   */
   const handleRemoveCashier = useCallback((cashierId: string) => {
     setCashiers((prev) => {
       const target = prev.find((c) => c.id === cashierId);
@@ -158,9 +130,6 @@ export const App: React.FC = () => {
     });
   }, []);
 
-  /**
-   * Reset the simulator to initial state
-   */
   const handleReset = useCallback(() => {
     setWaitingQueue([]);
     setCashiers(INITIAL_CASHIERS_FACTORY());
@@ -173,11 +142,6 @@ export const App: React.FC = () => {
     });
   }, []);
 
-  /**
-   * Primary Timer useEffect Hook:
-   * Display remaining time and time must tick down every second.
-   * When remaining time reaches 0, customer finishes and next in queue is served.
-   */
   useEffect(() => {
     if (isPaused) return;
 
@@ -207,11 +171,6 @@ export const App: React.FC = () => {
     return () => clearInterval(timer);
   }, [simulationSpeed, isPaused]);
 
-  /**
-   * Optional Auto-Assign useEffect:
-   * When autoAssign is toggled ON, automatically assigns customers from the waiting queue
-   * as soon as cashiers have capacity or new customers arrive.
-   */
   useEffect(() => {
     if (!autoAssign || waitingQueue.length === 0) return;
 
@@ -222,7 +181,6 @@ export const App: React.FC = () => {
     return () => clearTimeout(autoAssignTimer);
   }, [autoAssign, waitingQueue, handleAssignCustomer, simulationSpeed]);
 
-  // Trigger brief celebration when all customers served after reaching 10+
   useEffect(() => {
     const allIdle = cashiers.every((c) => !c.currentCustomer && c.queue.length === 0);
     if (allIdle && waitingQueue.length === 0 && stats.totalServed >= 5 && stats.totalServed === stats.totalCreated) {
@@ -233,12 +191,10 @@ export const App: React.FC = () => {
           origin: { y: 0.7 },
         });
       } catch {
-        // Safe fallback
       }
     }
   }, [cashiers, waitingQueue, stats]);
 
-  // Derived metrics
   const totalInCashierQueues = cashiers.reduce(
     (sum, c) => sum + (c.currentCustomer ? 1 : 0) + c.queue.length,
     0
@@ -246,14 +202,11 @@ export const App: React.FC = () => {
 
   return (
     <div className="simulator-page">
-      {/* Page Title */}
       <header className="page-header">
         <h1 className="page-title">Cashier Queue Simulator</h1>
       </header>
 
-      {/* Main UI layout matching the PDF wireframe */}
       <main className="simulator-container">
-        {/* Leftmost panel: Cyan Cashier Queue control box */}
         <ControlPanel
           onAddCustomer={handleAddCustomer}
           onAssignCustomer={handleAssignCustomer}
@@ -262,10 +215,8 @@ export const App: React.FC = () => {
           hasWaitingCustomers={waitingQueue.length > 0}
         />
 
-        {/* Middle panel: Waiting Queue component */}
         <WaitingQueue customers={waitingQueue} />
 
-        {/* Right panel: Cashiers section */}
         <section className="cashiers-panel" aria-label="Cashiers">
           <h2 className="cashiers-main-title">Cashiers</h2>
           <div className="cashiers-grid">
@@ -281,9 +232,7 @@ export const App: React.FC = () => {
         </section>
       </main>
 
-      {/* Simulator Extras: Controls, Statistics & Requirements Checklist */}
       <div className="simulator-extras">
-        {/* Simulation Controls & Live Stats */}
         <div className="info-card">
           <h3 className="info-card-title">
             <span role="img" aria-label="dashboard">⚙️</span>
@@ -392,7 +341,6 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Implementation Requirements Checklist */}
         <div className="info-card">
           <h3 className="info-card-title">
             <span role="img" aria-label="checklist">📋</span>

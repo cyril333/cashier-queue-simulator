@@ -49,7 +49,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           Assign All Customer
         </button>
 
-        {/* Add New Cashier Section */}
         <div className="add-cashier-section">
           <div className="add-cashier-header">Add New Cashier</div>
           <div className="buttons-row">
