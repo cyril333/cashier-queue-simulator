@@ -249,9 +249,6 @@ export const App: React.FC = () => {
       {/* Page Title */}
       <header className="page-header">
         <h1 className="page-title">Cashier Queue Simulator</h1>
-        <p className="page-subtitle">
-          Interactive multi-counter queue management simulator built with React, useState, and useEffect
-        </p>
       </header>
 
       {/* Main UI layout matching the PDF wireframe */}
